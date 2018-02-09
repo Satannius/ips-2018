@@ -1,0 +1,13 @@
+fun int main() =
+  let n = read(int) in
+    if n > 0 then
+        // Create array arr
+        let arr = iota(n) in
+        // Compute i+i or i*i for each entry
+        let arr = map(...) in
+        // Sum array elements
+        let sum = reduce(plus, 0, arr)
+        // Write result
+        write(sum)
+    else
+        write("Incorrect input!")
