@@ -22,6 +22,7 @@ type token =
   | IOTA of ((int*int))
   | ARROW of ((int*int))
   | MULT of ((int*int))
+  | DIV of ((int*int))
   | PLUS of ((int*int))
   | MINUS of ((int*int))
   | LESS of ((int*int))
@@ -61,6 +62,7 @@ type tokenId =
     | TOKEN_IOTA
     | TOKEN_ARROW
     | TOKEN_MULT
+    | TOKEN_DIV
     | TOKEN_PLUS
     | TOKEN_MINUS
     | TOKEN_LESS

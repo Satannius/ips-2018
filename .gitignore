@@ -1,0 +1,10 @@
+
+*.exe
+
+*.dll
+
+fasto/bin/Parser\.fsyacc\.output
+
+fasto/bin/Lexer\.fs
+
+fasto/bin/Parser\.fs

@@ -137,7 +137,11 @@ let trans : uint16[] array =
    (* State 37 *)
  [|65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 37us; 65535us; 65535us; 65535us; 37us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 37us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; |];
     |] 
+<<<<<<< HEAD
 let actions : uint16[] = [|65535us; 0us; 1us; 23us; 3us; 3us; 4us; 23us; 23us; 7us; 8us; 9us; 12us; 13us; 23us; 15us; 16us; 17us; 18us; 19us; 20us; 21us; 22us; 23us; 14us; 10us; 11us; 6us; 65535us; 65535us; 65535us; 65535us; 5us; 4us; 3us; 2us; 2us; 0us; |]
+=======
+let actions : uint16[] = [|65535us; 0us; 1us; 10us; 3us; 3us; 4us; 23us; 23us; 7us; 8us; 9us; 13us; 14us; 15us; 16us; 17us; 18us; 19us; 20us; 21us; 22us; 23us; 11us; 12us; 6us; 65535us; 65535us; 65535us; 65535us; 5us; 4us; 3us; 2us; 2us; 0us; |]
+>>>>>>> master
 let _fslex_tables = Microsoft.FSharp.Text.Lexing.AsciiTables.Create(trans,actions)
 let rec _fslex_dummy () = _fslex_dummy() 
 (* Rule Token *)
@@ -213,6 +217,7 @@ and _fslex_Token  _fslex_state lexbuf =
           )
   | 10 -> ( 
 # 108 "src/Lexer.fsl"
+<<<<<<< HEAD
                                            Parser.ARROW  (getPos lexbuf) 
 # 217 "bin/Lexer.fs"
           )
@@ -235,51 +240,112 @@ and _fslex_Token  _fslex_state lexbuf =
 # 112 "src/Lexer.fsl"
                                            Parser.AND    (getPos lexbuf) 
 # 237 "bin/Lexer.fs"
+=======
+                                           Parser.DIV    (getPos lexbuf) 
+# 213 "bin/Lexer.fs"
+          )
+  | 11 -> ( 
+# 109 "src/Lexer.fsl"
+                                           Parser.ARROW  (getPos lexbuf) 
+# 218 "bin/Lexer.fs"
+          )
+  | 12 -> ( 
+# 110 "src/Lexer.fsl"
+                                           Parser.DEQ    (getPos lexbuf) 
+# 223 "bin/Lexer.fs"
+          )
+  | 13 -> ( 
+# 111 "src/Lexer.fsl"
+                                           Parser.EQ     (getPos lexbuf) 
+# 228 "bin/Lexer.fs"
+          )
+  | 14 -> ( 
+# 112 "src/Lexer.fsl"
+                                           Parser.LTH    (getPos lexbuf) 
+# 233 "bin/Lexer.fs"
+>>>>>>> master
           )
   | 15 -> ( 
 # 113 "src/Lexer.fsl"
                                            Parser.LPAR   (getPos lexbuf) 
+<<<<<<< HEAD
 # 242 "bin/Lexer.fs"
+=======
+# 238 "bin/Lexer.fs"
+>>>>>>> master
           )
   | 16 -> ( 
 # 114 "src/Lexer.fsl"
                                            Parser.RPAR   (getPos lexbuf) 
+<<<<<<< HEAD
 # 247 "bin/Lexer.fs"
+=======
+# 243 "bin/Lexer.fs"
+>>>>>>> master
           )
   | 17 -> ( 
 # 115 "src/Lexer.fsl"
                                            Parser.LBRACKET (getPos lexbuf) 
+<<<<<<< HEAD
 # 252 "bin/Lexer.fs"
+=======
+# 248 "bin/Lexer.fs"
+>>>>>>> master
           )
   | 18 -> ( 
 # 116 "src/Lexer.fsl"
                                            Parser.RBRACKET (getPos lexbuf) 
+<<<<<<< HEAD
 # 257 "bin/Lexer.fs"
+=======
+# 253 "bin/Lexer.fs"
+>>>>>>> master
           )
   | 19 -> ( 
 # 117 "src/Lexer.fsl"
                                            Parser.LCURLY (getPos lexbuf) 
+<<<<<<< HEAD
 # 262 "bin/Lexer.fs"
+=======
+# 258 "bin/Lexer.fs"
+>>>>>>> master
           )
   | 20 -> ( 
 # 118 "src/Lexer.fsl"
                                            Parser.RCURLY (getPos lexbuf) 
+<<<<<<< HEAD
 # 267 "bin/Lexer.fs"
+=======
+# 263 "bin/Lexer.fs"
+>>>>>>> master
           )
   | 21 -> ( 
 # 119 "src/Lexer.fsl"
                                            Parser.COMMA  (getPos lexbuf) 
+<<<<<<< HEAD
 # 272 "bin/Lexer.fs"
+=======
+# 268 "bin/Lexer.fs"
+>>>>>>> master
           )
   | 22 -> ( 
 # 120 "src/Lexer.fsl"
                                            Parser.EOF    (getPos lexbuf) 
+<<<<<<< HEAD
 # 277 "bin/Lexer.fs"
           )
   | 23 -> ( 
 # 121 "src/Lexer.fsl"
                                            lexerError lexbuf "Illegal symbol in input" 
 # 282 "bin/Lexer.fs"
+=======
+# 273 "bin/Lexer.fs"
+>>>>>>> master
+          )
+  | 23 -> ( 
+# 121 "src/Lexer.fsl"
+                                           lexerError lexbuf "Illegal symbol in input" 
+# 278 "bin/Lexer.fs"
           )
   | _ -> failwith "Token"
 
