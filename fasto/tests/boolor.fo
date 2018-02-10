@@ -1,0 +1,6 @@
+fun bool main() =
+    let n = 2 in
+    let m = n + 1 in
+    let bfal = (n == m) in
+    let btru = (n == n) in
+    write(bfal || btru)
