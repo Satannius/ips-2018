@@ -25,6 +25,7 @@ type token =
   | PLUS of ((int*int))
   | MINUS of ((int*int))
   | LESS of ((int*int))
+  | AND of ((int*int))
   | INT of ((int*int))
   | CHAR of ((int*int))
   | BOOL of ((int*int))
@@ -63,6 +64,7 @@ type tokenId =
     | TOKEN_PLUS
     | TOKEN_MINUS
     | TOKEN_LESS
+    | TOKEN_AND
     | TOKEN_INT
     | TOKEN_CHAR
     | TOKEN_BOOL
