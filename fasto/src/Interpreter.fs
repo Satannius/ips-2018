@@ -189,8 +189,11 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
           | _ -> invalidOperands "|| on non-integral args: " [(Bool, Bool)] res1 res2 pos
   | Not(_, _) ->
         failwith "Unimplemented interpretation of not"
-  | Negate(_, _) ->
-        failwith "Unimplemented interpretation of negate"
+  | Negate(e1, pos) ->
+        let res = evalExp(e1, vtab, ftab)
+        match res with
+          | IntVal i -> IntVal (0-i)
+          | _ -> raise (MyError("Negation expect an int value", pos))
 
   | Equal(e1, e2, pos) ->
         let r1 = evalExp(e1, vtab, ftab)
