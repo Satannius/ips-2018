@@ -193,8 +193,11 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
           | (BoolVal n1) -> BoolVal (not n1)
           | _ -> raise (MyError("Unknown variable "+e1, pos))
           // | _ -> invalidOperands "not on non-integral arg: "// [(Bool)] res1 pos
-  | Negate(_, _) ->
-        failwith "Unimplemented interpretation of negate"
+  | Negate(e1, pos) ->
+        let res = evalExp(e1, vtab, ftab)
+        match res with
+          | IntVal i -> IntVal (0-i)
+          | _ -> raise (MyError("Negation expect an int value", pos))
 
   | Equal(e1, e2, pos) ->
         let r1 = evalExp(e1, vtab, ftab)
