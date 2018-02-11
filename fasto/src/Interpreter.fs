@@ -187,17 +187,16 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
         match (res1, res2) with
           | (BoolVal n1, BoolVal n2) -> BoolVal (n1||n2)
           | _ -> invalidOperands "|| on non-integral args: " [(Bool, Bool)] res1 res2 pos
-  | Not(e1, pos) ->
-        let res1   = evalExp(e1, vtab, ftab)
-        match (res1) with
-          | (BoolVal n1) -> BoolVal (not n1)
-          | _ -> raise (MyError("Unknown variable "+e1, pos))
-          // | _ -> invalidOperands "not on non-integral arg: "// [(Bool)] res1 pos
-  | Negate(e1, pos) ->
-        let res = evalExp(e1, vtab, ftab)
+  | Not(e, pos) ->
+        let res   = evalExp(e, vtab, ftab)
+        match res with
+          | BoolVal n -> BoolVal (not n)
+          | _ -> raise (MyError("Not expects a bool value ", pos))
+  | Negate(e, pos) ->
+        let res = evalExp(e, vtab, ftab)
         match res with
           | IntVal i -> IntVal (0-i)
-          | _ -> raise (MyError("Negation expect an int value", pos))
+          | _ -> raise (MyError("Negation expects an int value ", pos))
 
   | Equal(e1, e2, pos) ->
         let r1 = evalExp(e1, vtab, ftab)

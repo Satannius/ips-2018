@@ -1,0 +1,3 @@
+fun bool main() =
+    let t = true in
+    write(t)         // Should return true

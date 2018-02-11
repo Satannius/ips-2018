@@ -1,4 +1,4 @@
 fun bool main() =
     let n = 2 in
     let b = (n == n) in
-    write(b && b)
+    write(b && b)       // Should return true
