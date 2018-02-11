@@ -1,0 +1,5 @@
+fun bool main() =
+    let n = 2 in
+    let m = n + 1 in
+    let b = not(n == m) in
+    write(b)

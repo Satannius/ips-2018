@@ -112,6 +112,7 @@ rule Token = parse
   | '<'                   { Parser.LTH    (getPos lexbuf) }
   | "&&"                  { Parser.AND    (getPos lexbuf) }
   | "||"                  { Parser.OR     (getPos lexbuf) }
+  | "not"                 { Parser.NOT    (getPos lexbuf) }
   | '('                   { Parser.LPAR   (getPos lexbuf) }
   | ')'                   { Parser.RPAR   (getPos lexbuf) }
   | '['                   { Parser.LBRACKET (getPos lexbuf) }

@@ -187,8 +187,12 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
         match (res1, res2) with
           | (BoolVal n1, BoolVal n2) -> BoolVal (n1||n2)
           | _ -> invalidOperands "|| on non-integral args: " [(Bool, Bool)] res1 res2 pos
-  | Not(_, _) ->
-        failwith "Unimplemented interpretation of not"
+  | Not(e1, pos) ->
+        let res1   = evalExp(e1, vtab, ftab)
+        match (res1) with
+          | (BoolVal n1) -> BoolVal (not n1)
+          | _ -> raise (MyError("Unknown variable "+e1, pos))
+          // | _ -> invalidOperands "not on non-integral arg: "// [(Bool)] res1 pos
   | Negate(_, _) ->
         failwith "Unimplemented interpretation of negate"
 
