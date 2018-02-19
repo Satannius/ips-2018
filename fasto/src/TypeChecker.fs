@@ -108,8 +108,12 @@ and checkExp  (ftab : FunTable)
         Implement by pattern matching Plus/Minus above.
         See `AbSyn.fs` for the expression constructors of `Times`, ...
     *)
-    | Times (_, _, _) ->        
-        failwith "Unimplemented type check of multiplication"
+    | Times (e1, e2, pos) ->        
+        let (t1, e1_dec) = checkExp ftab vtab e1
+        let (t2, e2_dec) = checkExp ftab vtab e2
+        if (t1 = t2 && t1 = Int)
+        then (Int, Times (e1_dec, e2_dec, pos))
+        else raise (MyError ("In Times: one of subexpression types is not Int: "+ppType t1+" and "+ppType t2, pos)) // ppType = pretty print type
 
     | Divide (_, _, _) ->
         failwith "Unimplemented type check of division"
@@ -314,13 +318,14 @@ and checkFunWithVtable  (ftab : FunTable)
                         (pos  : Position)
                         (fdec : UntypedFunDec)
                       : TypedFunDec =
+                      // Define a pattern (tuple) and call it fundec
     let (FunDec (fname, rettype, parms, body, funpos)) = fdec
     (* Expand vtable by adding the parameters to vtab. *)
     let addParam ptable (Param (pname, ty)) =
             match SymTab.lookup pname ptable with
               | Some _ -> raise (MyError ("Multiple definitions of parameter name " + pname, funpos))
               | None   -> SymTab.bind pname ty ptable
-    let paramtable = List.fold addParam (SymTab.empty()) parms
+    let paramtable = List.fold addParam (SymTab.empty()) parms // Empty, because Fasto doesn't support global variables.
     let vtab' = SymTab.combine paramtable vtab
     let (body_type, body') = checkExp ftab vtab' body
     if body_type = rettype
@@ -337,6 +342,7 @@ and checkFunWithVtable  (ftab : FunTable)
 let updateFunctionTable  (ftab   : FunTable)
                          (fundec : UntypedFunDec)
                        : FunTable =
+                       // Define a pattern (tuple) and call it fundec
     let (FunDec (fname, ret_type, args, _, pos)) = fundec
     let arg_types = List.map (fun (Param (_, ty)) -> ty) args
     match SymTab.lookup fname ftab with
@@ -351,7 +357,7 @@ let checkFun  (ftab   : FunTable)
               (fundec : UntypedFunDec)
             : TypedFunDec =
     let (FunDec (_, _, _, _, pos)) = fundec
-    checkFunWithVtable ftab (SymTab.empty()) pos fundec
+    checkFunWithVtable ftab (SymTab.empty()) pos fundec // Empty, because Fasto doesn't support global variables.
 
 let checkProg (funDecs : UntypedFunDec list) : TypedFunDec list =
     let ftab = List.fold updateFunctionTable initFunctionTable funDecs

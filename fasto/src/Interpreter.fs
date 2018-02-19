@@ -289,8 +289,17 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
          the value of `a`; otherwise raise an error (containing 
          a meaningful message).
   *)
-  | Replicate (_, _, _, _) ->
-        failwith "Unimplemented interpretation of replicate"
+  | Replicate (e, el, t, pos) -> // e: exp size, el: exp element to repeat, t: type of el, pos: position
+        let n = evalExp(e, vtab, ftab)
+        let a = evalExp(el, vtab, ftab)
+        let tp = valueType a
+        match n with
+          | IntVal size ->
+            if size >= 0
+            then ArrayVal( List.map (fun x -> a) [0..size-1], tp )
+            else let msg = sprintf "Error: In Replicate call, size is negative: %i" size
+                 raise (MyError(msg, pos))
+          | _ -> raise (MyError("Replicate argument is not a number: "+ppVal 0 n, pos))
 
   (* TODO project task 2: `filter(p, arr)`
        pattern match the implementation of map:
@@ -301,7 +310,7 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
        - create an `ArrayVal` from the (list) result of the previous step.
   *)
   | Filter (_, _, _, _) ->
-        failwith "Unimplemented interpretation of map"
+        failwith "Unimplemented interpretation of filter"
 
   (* TODO project task 2: `scan(f, ne, arr)`
      Implementation similar to reduce, except that it produces an array 
