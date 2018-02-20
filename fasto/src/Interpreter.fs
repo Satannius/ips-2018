@@ -174,7 +174,6 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
         match (res1, res2) with
           | (IntVal n1, IntVal n2) -> IntVal (n1/n2)
           | _ -> invalidOperands "Division on non-integral args: " [(Int, Int)] res1 res2 pos
-
   | And (e1, e2, pos) ->
         let res1   = evalExp(e1, vtab, ftab)
         let res2   = evalExp(e2, vtab, ftab)
@@ -197,7 +196,6 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
         match res with
           | IntVal i -> IntVal (0-i)
           | _ -> raise (MyError("Negation expects an int value ", pos))
-
   | Equal(e1, e2, pos) ->
         let r1 = evalExp(e1, vtab, ftab)
         let r2 = evalExp(e2, vtab, ftab)
@@ -310,14 +308,14 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
        - create an `ArrayVal` from the (list) result of the previous step.
   *)
   | Filter (_, _, _, _) ->
-        failwith "Unimplemented interpretation of filter"
+        failwith "Unimplemented interpretation of map"
 
   (* TODO project task 2: `scan(f, ne, arr)`
      Implementation similar to reduce, except that it produces an array 
      of the same type and length to the input array `arr`.
   *)
-  | Scan (_, _, _, _, _) ->
-        failwith "Unimplemented interpretation of scan"
+  | Scan (farg, ne, arrexp, tp, pos) ->
+        failwith "Unimplemented interpretation of scan."
 
   | Read (t,p) ->
         let str = Console.ReadLine()
