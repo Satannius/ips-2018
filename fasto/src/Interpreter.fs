@@ -307,15 +307,35 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
          under predicate `p`, i.e., `p(a) = true`;
        - create an `ArrayVal` from the (list) result of the previous step.
   *)
-  | Filter (_, _, _, _) ->
-        failwith "Unimplemented interpretation of map"
+  | Filter (f, arrexp, t, pos) ->
+        failwith "Unimplemented interpretation of filter."
+        (*
+        let farg_ret_type = rtpFunArg f ftab pos
+        let arr = evalExp(arrexp, vtab, ftab)
+        match arr with 
+         | ArrayVal(lst, tp1) ->let resVals = List.filter (fun arr_el -> evalFunArg (f, vtab, ftab, pos, [arr_el])) lst 
+                                ArrayVal (resVals, farg_ret_type)
+         | _-> raise (MyError("Second Argument of Filter Is Not An Array: "+ppVal 0 arr, pos))
+        *)
 
   (* TODO project task 2: `scan(f, ne, arr)`
      Implementation similar to reduce, except that it produces an array 
      of the same type and length to the input array `arr`.
   *)
+
   | Scan (farg, ne, arrexp, tp, pos) ->
-        failwith "Unimplemented interpretation of scan."
+        let farg_ret_type = rtpFunArg farg ftab pos
+        let arr = evalExp (arrexp, vtab, ftab)
+        let nel = evalExp (ne, vtab, ftab)
+        match arr with
+          | ArrayVal (lst, tp1) ->
+             match lst.Length with
+               | 0 -> ArrayVal([], tp1)
+               | _ -> let first_el = (evalFunArg(farg, vtab, ftab, pos, [nel;List.head(lst)])) 
+                      ArrayVal (List.scan (fun acc x -> evalFunArg (farg, vtab, ftab, pos, [acc;x])) 
+                                        first_el (List.tail(lst)), tp1)
+          | other -> raise (MyError ("Third argument of scan is not an array :"
+                                       + ppVal 0 arr, pos))
 
   | Read (t,p) ->
         let str = Console.ReadLine()
