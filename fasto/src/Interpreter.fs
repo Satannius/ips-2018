@@ -176,16 +176,26 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
           | _ -> invalidOperands "Division on non-integral args: " [(Int, Int)] res1 res2 pos
   | And (e1, e2, pos) ->
         let res1   = evalExp(e1, vtab, ftab)
-        let res2   = evalExp(e2, vtab, ftab)
-        match (res1, res2) with
-          | (BoolVal n1, BoolVal n2) -> BoolVal (n1&&n2)
-          | _ -> invalidOperands "&& on non-integral args: " [(Bool, Bool)] res1 res2 pos
+        match res1 with
+          | BoolVal true ->
+            let res2 = evalExp(e2, vtab, ftab)
+            match res2 with
+              | BoolVal true  -> BoolVal true
+              | BoolVal false -> BoolVal false
+              | _ -> invalidOperand "&& on non-integral args: " Bool res2 pos
+          | BoolVal false -> BoolVal false
+          | _ -> invalidOperand "&& on non-integral args: " Bool res1 pos
   | Or (e1, e2, pos) ->
         let res1   = evalExp(e1, vtab, ftab)
-        let res2   = evalExp(e2, vtab, ftab)
-        match (res1, res2) with
-          | (BoolVal n1, BoolVal n2) -> BoolVal (n1||n2)
-          | _ -> invalidOperands "|| on non-integral args: " [(Bool, Bool)] res1 res2 pos
+        match res1 with
+          | BoolVal false ->
+            let res2 = evalExp(e2, vtab, ftab)
+            match res2 with
+              | BoolVal true  -> BoolVal true
+              | BoolVal false -> BoolVal false
+              | _ -> invalidOperand "|| on non-integral args: " Bool res2 pos
+          | BoolVal true -> BoolVal true
+          | _ -> invalidOperand "|| on non-integral args: " Bool res1 pos
   | Not(e, pos) ->
         let res   = evalExp(e, vtab, ftab)
         match res with
