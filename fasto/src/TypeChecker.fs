@@ -115,14 +115,26 @@ and checkExp  (ftab : FunTable)
         then (Int, Times (e1_dec, e2_dec, pos))
         else raise (MyError ("In Times: one of subexpression types is not Int: "+ppType t1+" and "+ppType t2, pos)) // ppType = pretty print type
 
-    | Divide (_, _, _) ->
-        failwith "Unimplemented type check of division"
+    | Divide (e1, e2, pos) ->
+        let (t1, e1_dec) = checkExp ftab vtab e1
+        let (t2, e2_dec) = checkExp ftab vtab e2
+        if (t1 = t2 && t1 = Int)
+        then (Int, Divide (e1_dec, e2_dec, pos))
+        else raise (MyError ("In Divide: one of subexpression types is not Int: "+ppType t1+" and "+ppType t2, pos))
 
-    | And (_, _, _) ->
-        failwith "Unimplemented type check of &&"
+    | And (e1, e2, pos) ->
+        let (t1, e1_dec) = checkExp ftab vtab e1
+        let (t2, e2_dec) = checkExp ftab vtab e2
+        if (t1 = t2 && t1 = Bool)
+        then (Bool, And (e1_dec, e2_dec, pos))
+        else raise (MyError ("In &&: one of subexpression types is not Bool: "+ppType t1+" and "+ppType t2, pos))
 
-    | Or (_, _, _) ->
-        failwith "Unimplemented type check of ||"
+    | Or (e1, e2, pos) ->
+        let (t1, e1_dec) = checkExp ftab vtab e1
+        let (t2, e2_dec) = checkExp ftab vtab e2
+        if (t1 = t2 && t1 = Bool)
+        then (Bool, And (e1_dec, e2_dec, pos))
+        else raise (MyError ("In ||: one of subexpression types is not Bool: "+ppType t1+" and "+ppType t2, pos))
 
     | Not (_, _) ->
         failwith "Unimplemented type check of not"
