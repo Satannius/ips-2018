@@ -133,7 +133,7 @@ and checkExp  (ftab : FunTable)
         let (t1, e1_dec) = checkExp ftab vtab e1
         let (t2, e2_dec) = checkExp ftab vtab e2
         if (t1 = t2 && t1 = Bool)
-        then (Bool, And (e1_dec, e2_dec, pos))
+        then (Bool, Or (e1_dec, e2_dec, pos))
         else raise (MyError ("In ||: one of subexpression types is not Bool: "+ppType t1+" and "+ppType t2, pos))
 
     | Not (e, pos) ->
@@ -142,8 +142,11 @@ and checkExp  (ftab : FunTable)
         then (Bool, Not(e_dec, pos))
         else raise (MyError ("In Not: the subexpression type is not Bool: "+ppType t, pos))
 
-    | Negate (_, _) ->
-        failwith "Unimplemented type check of negate"
+    | Negate (e, pos) ->
+        let (t, e_dec) = checkExp ftab vtab e
+        match t with
+          | Int       -> (Int, Negate(e_dec, pos))
+          | otherwise -> raise (MyError ("In Negate: subexpression type is not Int: "+ppType t, pos))
 
     (* The types for e1, e2 must be the same. The result is always a Bool. *)
     | Equal (e1, e2, pos) ->
@@ -304,8 +307,33 @@ and checkExp  (ftab : FunTable)
               scan's return type is the same as the type of `arr`,
               while reduce's return type is that of an element of `arr`).
     *)
-    | Scan (_, _, _, _, _) ->
-        failwith "Unimplemented type check of scan"
+    | Scan (f, n_exp, arr_exp, _, pos) ->
+        let (n_type  , n_dec  ) = checkExp ftab vtab n_exp 
+        let (arr_type, arr_dec) = checkExp ftab vtab arr_exp  
+        let elem_type =
+            match arr_type with
+              | Array t -> t
+              | other -> raise (MyError ("Scan: Argument not an array", pos))
+        let (f', f_arg_type) =
+            match checkFunArg ftab vtab pos f with
+              | (f', res, [a1; a2]) ->
+                  if a1 = a2 && a2 = res
+                  then (f', res)
+                  else raise (MyError( "Scan: incompatible function type of " +
+                                       (ppFunArg 0 f) + ": " + showFunType ([a1; a2], res)
+                                     , pos))
+              | (_, res, args) ->
+                  raise (MyError ( "Scan: incompatible function type of " +
+                                   ppFunArg 0 f + ": " + showFunType (args, res)
+                                 , pos))
+        let err (s, t) = MyError ( "Scan: unexpected " + s + " type " + ppType t +
+                                   ", expected " + ppType f_arg_type
+                                 , pos)
+        if   elem_type = f_arg_type && arr_type = n_type then
+             (elem_type, Scan (f', n_dec, arr_dec, elem_type, pos))
+        elif elem_type = f_arg_type then
+             raise (err ("neutral element", n_type))
+        else raise (err ("array element", elem_type))
 
 and checkFunArg  (ftab : FunTable)
                  (vtab : VarTable)
