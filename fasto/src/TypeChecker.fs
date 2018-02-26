@@ -292,7 +292,7 @@ and checkExp  (ftab : FunTable)
         if n_type = Int
         then (Array a_type, Replicate(n_dec, a_dec, a_type, pos))
         else raise (MyError ("Replicate: wrong argument type "+ppType n_type, pos))
-        
+
 
     (* TODO project task 2: Hint for `filter(f, arr)`
         Look into the type-checking lecture slides for the type rule of `map`
@@ -303,8 +303,25 @@ and checkExp  (ftab : FunTable)
             - `arr` should be of type `[ta]`
             - the result of filter should have type `[tb]`
     *)
-    | Filter (_, _, _, _) ->
-        failwith "Unimplemented type check of map"
+    | Filter (f, arr_exp, _, pos) ->
+        let (arr_type, arr_exp_dec) = checkExp ftab vtab arr_exp
+        let elem_type =
+            match arr_type with
+              | Array t -> t
+              | other   -> raise (MyError ("Filter: Argument not an array", pos))
+        let (f', f_res_type, f_arg_type) =
+            match checkFunArg ftab vtab pos f with
+              | (f', Bool, [a1]) -> (f', Bool, a1)
+              | (_,  _, args) ->
+                  raise (MyError ( "Filter: incompatible function type of " +
+                                    ppFunArg 0 f + ":" + showFunType (args, Bool)
+                                  , pos ))
+        if elem_type = f_arg_type
+        then ( Array f_res_type
+              , Map (f', arr_exp_dec, elem_type, f_res_type, pos) )
+        else raise (MyError( "Map: array element types does not match." +
+                              ppType elem_type + " instead of " + ppType f_arg_type
+                            , pos))
 
     (* TODO project task 2: `scan(f, ne, arr)`
         Hint: Implementation is very similar to `reduce(f, ne, arr)`.
@@ -313,8 +330,8 @@ and checkExp  (ftab : FunTable)
               while reduce's return type is that of an element of `arr`).
     *)
     | Scan (f, n_exp, arr_exp, _, pos) ->
-        let (n_type  , n_dec  ) = checkExp ftab vtab n_exp 
-        let (arr_type, arr_dec) = checkExp ftab vtab arr_exp  
+        let (n_type  , n_dec  ) = checkExp ftab vtab n_exp
+        let (arr_type, arr_dec) = checkExp ftab vtab arr_exp
         let elem_type =
             match arr_type with
               | Array t -> t
