@@ -431,18 +431,22 @@ let rec compileExp  (e      : TypedExp)
     @ [Mips.LI (place, "0")]                // One is false, load imm 0 = false
     @ [Mips.LABEL endLabel]                 // end
 
-        // let t1 = newName "and_L"
-        // let t2 = newName "and_R"
-        // let code1 = compileExp e1 vtable t1
-        // let code2 = compileExp e2 vtable t2
-        // code1 @ code2 @ [Mips.AND (place, t1, t2)]
-
   | Or (e1, e2, pos) ->
-        let t1 = newName "or_L"
-        let t2 = newName "or_R"
-        let code1 = compileExp e1 vtable t1
-        let code2 = compileExp e2 vtable t2
-        code1 @ code2 @ [Mips.OR (place, t1, t2)]
+    let t1 = newName "or_L"
+    let t2 = newNAme "or_R"
+    let code1 = compileExp e1 vtable t1
+    let code2 = compileExp e2 vtable t2
+    let endLabel = newName "endor"
+    let trueLabel = newName "true"
+    code1                                   // Compile exp1
+    @ [Mips.BEQ (t1, "1", trueLabel)]       // Jump directly to true if exp1 false
+    @ code2                                 // Compile exp2
+    @ [Mips.BEQ (t2, "1", trueLabel)]       // Jump to false if exp2 false
+    @ [Mips.LI  (place,"0")]                // Both true, load imm 1 = true
+    @ [Mips.J endLabel]                     // Jump to end
+    @ [Mips.LABEL trueLabel]                //
+    @ [Mips.LI (place, "1")]                // One is false, load imm 0 = false
+    @ [Mips.LABEL endLabel]                 // end
 
   (* Indexing:
      1. generate code to compute the index
