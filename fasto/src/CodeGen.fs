@@ -415,11 +415,27 @@ let rec compileExp  (e      : TypedExp)
         the code of `e2` must not be executed. Similar for `And` (&&).
   *)
   | And (e1, e2, pos) ->
-        let t1 = newName "and_L"
-        let t2 = newName "and_R"
-        let code1 = compileExp e1 vtable t1
-        let code2 = compileExp e2 vtable t2
-        code1 @ code2 @ [Mips.AND (place, t1, t2)]
+    let t1 = newName "and_L"
+    let t2 = newNAme "and_R"
+    let code1 = compileExp e1 vtable t1
+    let code2 = compileExp e2 vtable t2
+    let endLabel = newName "endand"
+    let falseLabel = newName "false"
+    code1                                   // Compile exp1
+    @ [Mips.BEQ (t1, "0", falseLabel)]      // Jump directly to false if exp1 false
+    @ code2                                 // Compile exp2
+    @ [Mips.BEQ (t2, "0", falseLabel)]      // Jump to false if exp2 false
+    @ [Mips.LI  (place,"1")]                // Both true, load imm 1 = true
+    @ [Mips.J endLabel]                     // Jump to end
+    @ [Mips.LABEL falseLabel]               //
+    @ [Mips.LI (place, "0")]                // One is false, load imm 0 = false
+    @ [Mips.LABEL endLabel]                 // end
+
+        // let t1 = newName "and_L"
+        // let t2 = newName "and_R"
+        // let code1 = compileExp e1 vtable t1
+        // let code2 = compileExp e2 vtable t2
+        // code1 @ code2 @ [Mips.AND (place, t1, t2)]
 
   | Or (e1, e2, pos) ->
         let t1 = newName "or_L"
