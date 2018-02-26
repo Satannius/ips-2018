@@ -416,7 +416,7 @@ let rec compileExp  (e      : TypedExp)
   *)
   | And (e1, e2, pos) ->
     let t1 = newName "and_L"
-    let t2 = newNAme "and_R"
+    let t2 = newName "and_R"
     let code1 = compileExp e1 vtable t1
     let code2 = compileExp e2 vtable t2
     let endLabel = newName "endand"
@@ -433,7 +433,7 @@ let rec compileExp  (e      : TypedExp)
 
   | Or (e1, e2, pos) ->
     let t1 = newName "or_L"
-    let t2 = newNAme "or_R"
+    let t2 = newName "or_R"
     let code1 = compileExp e1 vtable t1
     let code2 = compileExp e2 vtable t2
     let endLabel = newName "endor"
