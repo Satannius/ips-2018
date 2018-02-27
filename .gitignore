@@ -10,3 +10,7 @@ fasto/bin/Lexer\.fs
 fasto/bin/Parser\.fs
 
 fasto/bin/
+
+*.asm
+
+*.out-testresult
