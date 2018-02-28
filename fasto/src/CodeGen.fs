@@ -264,8 +264,10 @@ let rec compileExp  (e      : TypedExp)
       let code = compileExp e vtable t
       code @ [Mips.XORI(place, t, "1")]
 
-  | Negate (_, _) ->
-      failwith "Unimplemented code generation of negate"
+  | Negate (e, pos) ->
+      let t = newName "negate"
+      let code = comilpExp e vtable t
+      code @ [Mips.XORI(place, t, "1")] @ [Mips.XORI(place, t, "-1")]
 
   | Let (dec, e1, pos) ->
       let (code1, vtable1) = compileDec dec vtable
@@ -685,8 +687,38 @@ let rec compileExp  (e      : TypedExp)
         the current location of the result iterator at every iteration of
         the loop.
   *)
-  | Scan (_, _, _, _, _) ->
+  | Scan (binop, acc_exp, arr_exp, elem_type, pos) ->
+      (*
+      let res_it   = newName "res_reg"
+      let inp_it   = newName "inp_reg"
+      let size_reg = newName "size_reg"
+      let len_reg  = newName "len_reg"   (* size of input array *)
+      let i_reg    = newName "ind_var"   (* loop counter *)
+      let tmp_reg  = newName "tmp_reg"   
+      let acc_reg  = newName "acc_reg"   (* for several purpose *)
+      let loop_beg = newName "loop_beg"
+      let loop_end = newName "loop_end"
+      
+      let inp_doce = compileExp arr_exp vtable inp_it
+      let acc_code = compileExp acc_exp vtable acc_reg
+      let len_code = [Mips.LW (len_reg, inp_it, "0")] (* the offset is 0 *); Mip.ADDI(inp_it, inp_it, "4")
+
+      let loop_code =
+              [ Mips.LABEL(loop_beg)
+              ; Mips.SUB(tmp_reg, i_reg, len_reg)
+              ; Mips.BGEZ(tmp_reg, loop_end)
+              ]
+
+      inp_code @ acc_code @ len_code @ dynalloc (len_reg, palce, elem_type) @ 
+      [Mips.ADDI(res_it, place, "4"); Mips.MOVE(i_reg, "0")] @ 
+      [Mips.LW(tmp_reg, inp_it, "0")] @ applyFunArg (binop, [acc_reg; tmp_reg], vtable, acc_reg, pos) @
+      [Mips.SW(acc_reg, res_it, "0"); Mips.ADDI(res_it, res_it, "4"); 
+       Mips.ADDI(inp_it, inp_it, "4"); Mips.ADDI(i_reg, i_reg, "1")] @
+      [Mips.J loop_beg; Mips.Lable loop_end]
+      *)
       failwith "Unimplemented code generation of scan"
+     
+      
 
 and applyFunArg ( ff     : TypedFunArg
                 , args   : Mips.reg list
