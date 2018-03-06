@@ -87,9 +87,6 @@ let rec copyConstPropFoldExp (vtable : VarTable)
                         restructured, semantically-equivalent expression:
                                 `let x = e1 in let y = e2 in e3`
                     *)
-                    // | Let (Dec (name, e, decpos), body, pos) ->
-                    //      | Let (Dec (nested_name, nested_e, nested_decpos), nested_body, nested_pos) ->
-                    // let normalized_exp = Let (Dec (nested_name, nested_e, nested_decpos), body, pos) // Let (Dec(id, exp, _), body, _)
                     let body' = Let (Dec (name, e, decpos), body, pos)
                     let normalized_exp = Let (Dec (nested_name, nested_e, nested_decpos), body', pos)
                     copyConstPropFoldExp vtable normalized_exp
@@ -108,15 +105,18 @@ let rec copyConstPropFoldExp (vtable : VarTable)
             match (e1', e2') with
                 | (Constant (IntVal x, _), Constant (IntVal y, _)) ->
                     Constant (IntVal (x * y), pos)
-                | (Constant (IntVal 0, _), _) -> Constant ((IntVal 0), pos) // If either exp is 0, return 0
-                | (_, Constant (IntVal 0, _)) -> Constant ((IntVal 0), pos) // If either exp is 0, return 0
                 | (Constant (IntVal 1, _), _) -> e2'
                 | (_, Constant (IntVal 1, _)) -> e1'
                 | _ -> Times (e1', e2', pos)
 
-        | And (_, _, _) ->
+        | And (e1, e2, pos) ->
             (* TODO project task 3: see above. you may inspire yourself from `Or` *)
-            failwith "Unimplemented copyConstPropFold for &&"
+            let e1' = copyConstPropFoldExp vtable e1
+            let e2' = copyConstPropFoldExp vtable e2
+            match (e1', e2') with
+                | (Constant (BoolVal a, _), Constant (BoolVal b, _)) ->
+                    Constant (BoolVal (a && b), pos)
+                | _ -> And (e1', e2', pos)
         | Constant (x,pos) -> Constant (x,pos)
         | StringLit (x,pos) -> StringLit (x,pos)
         | ArrayLit (es, t, pos) ->
