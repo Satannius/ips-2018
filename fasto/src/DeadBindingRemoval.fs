@@ -67,7 +67,12 @@ let rec removeDeadBindingsInExp (e : TypedExp) : (bool * DBRtab * TypedExp) =
                         you need to record it in a new symbol table.
                   - 3rd element of the tuple: should be the optimised expression.
             *)
-            failwith "Unimplemented removeDeadBindingsInExp for Var"
+            let new_tab = SymTab.empty()
+            (
+                false,
+                SymTab.bind name () new_tab,
+                Var (name, pos)
+            )
 
         | Index (name, e, t, pos) ->
             (* Task 3, `Index` case: is similar to the `Var` case, except that,
