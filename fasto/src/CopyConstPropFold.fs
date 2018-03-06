@@ -21,20 +21,29 @@ let rec copyConstPropFoldExp (vtable : VarTable)
     match e with
         (* Copy propagation is handled entirely in the following three
         cases for variables, array indexing, and let-bindings. *)
-        | Var (name, pos) ->
+        | Var (name, pos) -> 
             (* TODO project task 3:
                 Should probably look in the symbol table to see if
                 a binding corresponding to the current variable `name`
                 exists and if so, it should replace the current expression
                 with the binded variable or constant.
             *)
-            failwith "Unimplemented copyConstPropFold for Var"
+            let id = SymTab.lookup name vtable
+            match id with
+                | Some (VarProp v)   -> Var(v, pos)
+                | Some (ConstProp c) -> Constant(c, pos)
+                | _                  -> Var(name, pos)
         | Index (name, e, t, pos) ->
             (* TODO project task 3:
                 Should probably do the same as the `Var` case, for
                 the array name, and optimize the index expression `e` as well.
             *)
-            failwith "Unimplemented copyConstPropFold for Index"
+            let id = SymTab.lookup name vtable
+            let e' = copyConstPropFoldExp vtable e
+            match id with
+                | Some (VarProp v)   -> Index(v, e', t, pos)
+                | Some (ConstProp c) -> Constant(c, pos)
+                | _                  -> Index(name, e', t, pos)
         | Let (Dec (name, e, decpos), body, pos) ->
             let e' = copyConstPropFoldExp vtable e
             match e' with
