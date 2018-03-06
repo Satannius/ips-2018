@@ -423,8 +423,8 @@ let rec compileExp  (e      : TypedExp)
     let t2 = newName "and_R"
     let code1 = compileExp e1 vtable t1
     let code2 = compileExp e2 vtable t2
-    let endLabel = newName "endand"
-    let falseLabel = newName "false"
+    let endLabel = newName "and_end"
+    let falseLabel = newName "and_false"
     code1                                   // Compile exp1
     @ [Mips.BEQ (t1, "0", falseLabel)]      // Jump directly to false if exp1 false
     @ code2                                 // Compile exp2
@@ -440,13 +440,13 @@ let rec compileExp  (e      : TypedExp)
     let t2 = newName "or_R"
     let code1 = compileExp e1 vtable t1
     let code2 = compileExp e2 vtable t2
-    let endLabel = newName "endor"
-    let trueLabel = newName "true"
+    let endLabel = newName "or_end"
+    let trueLabel = newName "or_true"
     code1                                   // Compile exp1
-    @ [Mips.BEQ (t1, "1", trueLabel)]       // Jump directly to true if exp1 true
+    @ [Mips.BNE (t1, "0", trueLabel)]       // Jump directly to true if exp1 not false = true
     @ code2                                 // Compile exp2
-    @ [Mips.BEQ (t2, "1", trueLabel)]       // Jump to true if exp2 true
-    @ [Mips.LI  (place, "0")]                // Both false, load imm 0 = false
+    @ [Mips.BNE (t2, "0", trueLabel)]       // Jump to true if exp2 not false = true
+    @ [Mips.LI  (place, "0")]               // Both false, load imm 0 = false
     @ [Mips.J endLabel]                     // Jump to end
     @ [Mips.LABEL trueLabel]                //
     @ [Mips.LI (place, "1")]                // One is true, load imm 1 = true
@@ -804,7 +804,7 @@ let rec compileExp  (e      : TypedExp)
         @ init_regs
         @ loop_header
         @ loop_filter0
-        @ loop_filter1
+        @ loop_filter1 
         @ loop_footer
 
 
