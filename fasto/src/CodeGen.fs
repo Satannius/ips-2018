@@ -267,7 +267,9 @@ let rec compileExp  (e      : TypedExp)
   | Negate (e, pos) ->
       let t = newName "negate"
       let code = compileExp e vtable t
-      code @ [Mips.XORI(place, t, "1")] @ [Mips.XORI(place, t, "-1")]
+      code
+      @ [Mips.XORI(place, t, "1")]
+      @ [Mips.XORI(place, t, "-1")]
 
   | Let (dec, e1, pos) ->
       let (code1, vtable1) = compileDec dec vtable
