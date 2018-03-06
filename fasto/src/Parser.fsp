@@ -135,6 +135,8 @@ Exp : NUM            { Constant (IntVal (fst $1), snd $1) }
                      { Map ($3, $5, (), (), $1) }
     | REDUCE LPAR FunArg COMMA Exp COMMA Exp RPAR
                      { Reduce ($3, $5, $7, (), $1) }
+    | REDUCE LPAR OP BinOp COMMA Exp COMMA Exp RPAR
+                     { Reduce ($4, $6, $8, (), $1) }
     | REPLICATE LPAR Exp COMMA Exp RPAR
                      { Replicate ($3, $5, (), $1) }
     | FILTER LPAR FunArg COMMA Exp RPAR
