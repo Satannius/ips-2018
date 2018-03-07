@@ -97,7 +97,12 @@ let rec removeDeadBindingsInExp (e : TypedExp) : (bool * DBRtab * TypedExp) =
                       -- construct the the new `Let` expression from
                          the resulted optimized subexpressions.
             *)
-            failwith "Unimplemented removeDeadBindingsInExp for Let"
+            let (eios, e_uses, e') = removeDeadBindingsInExp e
+            let (bodyios, body_uses, body') = removeDeadBindingsInExp body
+            let uses = SymTab.lookup name body_uses
+            match (uses, eios) with
+                | (None, false) -> (bodyios, body_uses, body')
+                | (_, _) -> (eios || bodyios, SymTab.combine e_uses body_uses, Let (Dec (name, e', decpos), body', pos))
 
         | Plus (x, y, pos) ->
             let (xios, xuses, x') = removeDeadBindingsInExp x
