@@ -80,7 +80,12 @@ let rec removeDeadBindingsInExp (e : TypedExp) : (bool * DBRtab * TypedExp) =
                         expression `e` and to propagate its results (in addition
                         to recording the use of `name`).
             *)
-            failwith "Unimplemented removeDeadBindingsInExp for Index"
+            let (eios, e_uses, e') = removeDeadBindingsInExp e
+            let name_tab = SymTab.empty()
+            let name_tab = SymTab.bind name () name_tab
+            (eios,
+             SymTab.combine name_tab e_uses,
+             Index (name, e', t, pos))
 
         | Let (Dec (name, e, decpos), body, pos) ->
             (* Task 3, Hints for the `Let` case:
