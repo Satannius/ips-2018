@@ -204,6 +204,8 @@ let rec copyConstPropFoldExp (vtable : VarTable)
             match (e1', e2') with
                 | (Constant (IntVal x, _), Constant (IntVal y, _)) ->
                     Constant (IntVal (x / y), pos)
+                | (Constant (IntVal 0, _), _) -> Constant (IntVal 0, pos)   // Case 0 / e2 = 0
+                | (_, Constant (IntVal 1, _)) -> e1'                        // Case e1 / 1 = e1
                 | _ -> Divide (e1', e2', pos)
         | Or (e1, e2, pos) ->
             let e1' = copyConstPropFoldExp vtable e1
