@@ -336,18 +336,21 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
   *)
 
   | Scan (farg, ne, arrexp, tp, pos) ->
-        let farg_ret_type = rtpFunArg farg ftab pos
         let arr = evalExp (arrexp, vtab, ftab)
         let nel = evalExp (ne, vtab, ftab)
         match arr with
-          | ArrayVal (lst, tp1) ->
-             match lst.Length with
-               | 0 -> ArrayVal([], tp1)
-               | _ -> let first_el = (evalFunArg(farg, vtab, ftab, pos, [nel;List.head(lst)])) 
-                      ArrayVal (List.scan (fun acc x -> evalFunArg (farg, vtab, ftab, pos, [acc;x])) 
-                                        first_el (List.tail(lst)), tp1)
+          | ArrayVal (lst, atp) ->
+            let farg_ret_type = rtpFunArg farg ftab pos
+            if (farg_ret_type = atp) then
+              match lst.Length with
+                | 0 ->  ArrayVal([], atp)
+                | _ ->  let first_el = (evalFunArg(farg, vtab, ftab, pos, [nel;List.head(lst)])) 
+                        ArrayVal (List.scan (fun acc x -> evalFunArg (farg, vtab, ftab, pos, [acc;x])) first_el (List.tail(lst)), atp)
+            else
+              let msg = sprintf "Error: In Scan call, function return type does not match array type."
+              raise (MyError(msg, pos))
           | other -> raise (MyError ("Third argument of scan is not an array :"
-                                       + ppVal 0 arr, pos))
+                                        + ppVal 0 arr, pos))
 
   | Read (t,p) ->
         let str = Console.ReadLine()
