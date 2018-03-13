@@ -1,0 +1,6 @@
+fun bool main() =
+    let a =
+        if (true) then write(true)   // Should print true
+        else write(false) in
+    if (false) then write(false)     // Should print true
+    else write(true)

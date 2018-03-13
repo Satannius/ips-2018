@@ -1,3 +1,0 @@
-fun bool main() =
-    let f = false in
-    write(f)         // Should return false
