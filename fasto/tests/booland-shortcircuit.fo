@@ -1,2 +1,0 @@
-fun bool main() =
-    write(false && true)       // Should return true

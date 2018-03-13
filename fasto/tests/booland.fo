@@ -1,2 +1,3 @@
 fun bool main() =
-    write(true && true)       // Should return true
+    let b = write(false && true) in // Short circuits and returns false
+    write(true && true)  // Returns true
