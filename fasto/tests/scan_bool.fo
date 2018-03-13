@@ -1,0 +1,8 @@
+fun bool incr(bool a, bool b) = a || b
+
+fun bool writeBool(bool n) = write(n)
+
+fun [bool] main() =
+  let a = {true, false, false, true} in
+  let b = scan(incr, true, a) in
+  map(writeBool, b)
