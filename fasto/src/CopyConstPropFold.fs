@@ -54,12 +54,9 @@ let rec copyConstPropFoldExp (vtable : VarTable)
                               associating `x` with a variable-propagatee binding,
                               and optimize the `body` of the let.
                     *)
-                    // Create new VarProp "y" from x
-                    let p = VarProp v // which name does this refer to?
-                    // Bind to vtable, (v,vname)::vtable
-                    let vtab = SymTab.bind name p vtable // Associate name x with Propagatee
-                    // Check body
-                    let body' = copyConstPropFoldExp vtab e'
+                    let p = VarProp v                        // Create new VarProp "y" from x
+                    let vtab = SymTab.bind name p vtable     // Associate name x with Propagatee,  Bind to vtable, (v,vname)::vtable
+                    let body' = copyConstPropFoldExp vtab e' // Check body
                     Let (Dec (name, e', decpos), body', pos)
                 | Constant (c, pos) ->
                     (* TODO project task 3:
@@ -68,10 +65,8 @@ let rec copyConstPropFoldExp (vtable : VarTable)
                               associating `x` with a constant-propagatee binding,
                               and optimize the `body` of the let.
                     *)
-                    // Create new ConstProp from e.g. 5
-                    let p = ConstProp c // which name does this refer to?
-                    // Bind to vtable, (v,vname)::vtable
-                    let vtab = SymTab.bind name p vtable // Associate name x with Propagatee
+                    let p = ConstProp c                     // Create new ConstProp from e.g. 5
+                    let vtab = SymTab.bind name p vtable    // Associate name x with Propagatee. Bind to vtable, (v,vname)::vtable
                     // Check body
                     let body' = copyConstPropFoldExp vtab e'
                     Let (Dec (name, e', decpos), body', pos)
