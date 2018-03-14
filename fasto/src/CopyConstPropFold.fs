@@ -42,7 +42,6 @@ let rec copyConstPropFoldExp (vtable : VarTable)
             let e' = copyConstPropFoldExp vtable e
             match id with
                 | Some (VarProp v)   -> Index(v, e', t, pos)
-                | Some (ConstProp c) -> Constant(c, pos)
                 | _                  -> Index(name, e', t, pos)
         | Let (Dec (name, e, decpos), body, pos) ->
             let e' = copyConstPropFoldExp vtable e
@@ -56,7 +55,7 @@ let rec copyConstPropFoldExp (vtable : VarTable)
                     *)
                     let p = VarProp v                        // Create new VarProp "y" from x
                     let vtab = SymTab.bind name p vtable     // Associate name x with Propagatee,  Bind to vtable, (v,vname)::vtable
-                    let body' = copyConstPropFoldExp vtab e' // Check body
+                    let body' = copyConstPropFoldExp vtab body // Check body
                     Let (Dec (name, e', decpos), body', pos)
                 | Constant (c, pos) ->
                     (* TODO project task 3:
@@ -68,7 +67,7 @@ let rec copyConstPropFoldExp (vtable : VarTable)
                     let p = ConstProp c                     // Create new ConstProp from e.g. 5
                     let vtab = SymTab.bind name p vtable    // Associate name x with Propagatee. Bind to vtable, (v,vname)::vtable
                     // Check body
-                    let body' = copyConstPropFoldExp vtab e'
+                    let body' = copyConstPropFoldExp vtab body // Check body
                     Let (Dec (name, e', decpos), body', pos)
                 | Let (Dec (nested_name, nested_e, nested_decpos), nested_body, nested_pos) ->
                     (* TODO project task 3:
@@ -82,7 +81,10 @@ let rec copyConstPropFoldExp (vtable : VarTable)
                         restructured, semantically-equivalent expression:
                                 `let x = e1 in let y = e2 in e3`
                     *)
-                    let body' = Let (Dec (name, e, decpos), body, pos)
+
+                    // Create new inner body from outer name and inner body
+                    let body' = Let (Dec (name, nested_body, decpos), body, pos)
+                    // Create outer exp from nested_name and nested_e, with new inner body
                     let normalized_exp = Let (Dec (nested_name, nested_e, nested_decpos), body', pos)
                     copyConstPropFoldExp vtable normalized_exp
                 | _ -> (* Fallthrough - for everything else, do nothing *)
